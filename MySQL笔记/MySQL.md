@@ -379,6 +379,6 @@
 
 <h3><font color="green">MySQL常用存储引擎之InnoDB</font></h3>
 
-<img src="D:/test.jpg">
+<img src="img/test.jpg">
 
 <img src="img/1565094122805.png">
