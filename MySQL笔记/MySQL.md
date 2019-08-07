@@ -375,10 +375,11 @@
 
 <font color="red">This is a test font color</font>
 
+<p color="red">This is a test font color </p>
+
 <font color="yellow">This is a test font color</font>
 
-<h3><font color="green">MySQL常用存储引擎之InnoDB</font></h3>
+<h3 style="color:red"><font color="">MySQL常用存储引擎之InnoDB</font></h3>
 
 <img src="img/test.jpg">
 
-<img src="img/1565094122805.png">
