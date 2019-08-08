@@ -2,7 +2,7 @@
 
 ##  第1章  课程简介
 
-## 第2 章 Python中一切皆对象
+## 第2章 Python中一切皆对象
 
 ### 2.1 Python中的一切皆对象
 
@@ -254,3 +254,232 @@ print(day)
 
   
 
+## 第5章 自定义序列类
+
+### 5-1 序列类型的分类
+
+- 容器序列：可以放置任意类型的数据
+  - list
+  - tuple
+  - deque
+- 扁平序列
+  - str
+  - bytes
+  - bytearray
+  - array.array  （第六小节）
+- 可变序列
+  - list
+  - deque
+  - bytearray
+  - array
+- 不可变
+  - str
+  - tuple
+  - bytes
+
+### 5-2 序列类型的abc继承关系
+
+### 5-3 list中extend方法区别
+
+```python
+# a = list()
+a = [1, 2]
+c = a + [3, 4]  #
+# c = a+(3,4)   # 这个会报错
+
+print(c)
+
+a += (3, 4)     # 这个位置相当于是extend 只要是可迭代对象即可
+print(a)
+```
+
+
+
+### 5-4 实现可切片的对象
+
+- 切片操作会返回一个对象
+
+### 5-5 bisect 维护已排序序列
+
+`import bisect`
+
+### 5-6 什么时候不该使用列表
+
+- array 只能存放指定类型的数据
+
+### 5-7 字典生成式
+
+```python
+import array
+
+arr = array.array('i')
+arr.append(1)
+arr.append(1)
+arr.append(1)
+arr.append(1)
+arr.append(1)
+print(arr)
+list_ = [0 for i in range(10)]
+print(list_)
+# 列表生成式
+odd_list = [i for i in range(1, 21, 2)]
+odd_gen = (i for i in range(1, 21, 2))
+print(odd_list)
+print(odd_gen)
+
+person = {
+    "name": "王大毛",
+    "age": 23,
+    "addr": "han",
+    "gender": 0
+}
+
+# 取出字典的一项是items() 方法
+dic = {item[0]: item[1] for item in person.items()}
+print(dic)
+
+```
+
+- fromkeys:用于创建并返回一个新的字典。两个参数：第一个是字典的键，第二个（可选）是传入键的值，默认为None。
+
+  ```python
+  dict1 = dict.fromkeys(['1', '2', '3'])
+  print(dict1)
+  dict1 = dict.fromkeys("test")
+  print(dict1)
+  dict2 = dict.fromkeys([1, 2, 3], 'test')
+  print(dict2)
+  dict3 = dict.fromkeys([1, 2, 3], ['one', 'two', 'three'])
+  print(dict3)
+  """
+  {'1': None, '2': None, '3': None}
+  {'t': None, 'e': None, 's': None}
+  {1: 'test', 2: 'test', 3: 'test'}
+  {1: ['one', 'two', 'three'], 2: ['one', 'two', 'three'], 3: ['one', 'two', 'three']}
+  """
+  ```
+
+  
+
+## 第6章 dict和list
+
+### dict和list的实现原理
+
+- 在dict里面的效率远远大于list
+- 在list中随着list数据的增大，查找时间会增大
+- 在dict里面查找元素不会随着dict的增大而增大
+
+![1565255704432](img/%5CUsers%5Cscavenger%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1565255704432.png)
+
+- 原因：
+  - dict是hash实现的
+  - ![1565256113341](img/%5CUsers%5Cscavenger%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1565256113341.png)
+  - dict的key或者set的值  都必须是可hash的：
+    - 不可变对象都是可以hash的  string fronzenset  tuple
+  - dict 的内存花销大，查询速度快，Python内部的对象都是用dict包装的
+  - dict的存储顺序和元素添加顺序有关
+  - 添加元素有可能改变已有数据的顺序
+
+## 第7章 对象引用、可变性和垃圾回收
+
+### Python中的变量
+
+- Python和Java中变量的本质不一样，Python变量实际上是一个指针 int  str "便利贴"
+
+### del语句和垃圾回收
+
+- Python中垃圾回收的算法是采用 	<font size=6 color="red">引用计数</font>
+
+- 一个经典的错误
+
+  - `+`与`+=`的区别
+
+  ```python
+  def add(a, b):
+      a += b
+      return a
+  
+  
+  if __name__ == "__main__":
+      # a = 1
+      # b = 2
+      # c = add(a, b)
+      # print(c)
+      a = [1, 2]
+      b = [3, 4]
+      ret = add(a, b)
+      print("a:", a)
+      print("b:", b)
+      print("ret:", ret)
+      """
+      输出：
+      a: [1, 2, 3, 4]
+      b: [3, 4]
+      ret: [1, 2, 3, 4]
+      """
+      # a = (1, 2)
+      # b = (3, 4)
+      # ret = add(a, b)
+      # print("a:", a)
+      # print("b:", b)
+      # print("ret:", ret)
+      """
+      输出：
+      a: (1, 2)
+      b: (3, 4)
+      ret: (1, 2, 3, 4)
+      """
+  ```
+
+  summary:这个问题还是回到可变与不可变
+
+  - 参数共享内存的情况：见下面的例子
+
+    ```python
+    class Company:
+        def __init__(self, name, staffs=[]):
+            self.name = name
+            self.staffs = staffs
+    
+    
+    com1 = Company("com1", ["张三"])
+    print(com1.staffs)
+    com2 = Company("com2")
+    com2.staffs.append("赵武")
+    print(com2.staffs)
+    print(com2.staffs is com1.staffs)
+    """
+    输出：
+    ['张三']
+    ['赵武']
+    False
+    """
+    ```
+
+    ```python
+    class Company:
+        def __init__(self, name, staffs=[]):
+            self.name = name
+            self.staffs = staffs
+    
+    
+    com1 = Company("com1")
+    com1.staffs.append("战三")
+    print(com1.staffs)
+    
+    com2 = Company("com2")
+    com2.staffs.append("赵武")
+    print("com1:", com1.staffs)
+    print("com2", com2.staffs)
+    print(com2.staffs is com1.staffs)
+    """
+    ['战三']
+    com1: ['战三', '赵武']
+    com2 ['战三', '赵武']
+    True
+    """
+    ```
+
+    summary:通过上面的情况，我们可以得出如下结论：
+
+    ​	对于可变类型的参数，在初始化类时，如果给了具体参数，那么就单独分配一个空间，否者使用的是一个共享空间。[也不知道这个表述是不是准确^^]
